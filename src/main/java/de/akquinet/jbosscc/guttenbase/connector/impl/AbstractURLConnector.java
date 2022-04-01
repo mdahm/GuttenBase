@@ -36,7 +36,7 @@ public abstract class AbstractURLConnector extends AbstractConnector {
   public Connection openConnection() throws SQLException {
     if (_connection == null || _connection.isClosed()) {
       try {
-        Class.forName(_urlConnectionInfo.getDriver()).newInstance();
+        Class.forName(_urlConnectionInfo.getDriver()).getDeclaredConstructor().newInstance();
       } catch (final Exception e) {
         LOG.error("JDBC driver not found", e);
         throw new SQLException("Creating JDBC driver", e);
