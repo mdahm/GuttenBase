@@ -9,6 +9,7 @@ public class DefaultDatabaseTableFilter implements DatabaseTableFilter {
   @Override
   public String getCatalog(final DatabaseMetaData databaseMetaData) {
     switch (databaseMetaData.getDatabaseType()) {
+      case MARIADB:
       case MYSQL:
         return databaseMetaData.getSchema();
       default:
@@ -24,6 +25,7 @@ public class DefaultDatabaseTableFilter implements DatabaseTableFilter {
   @Override
   public String getSchemaPattern(final DatabaseMetaData databaseMetaData) {
     switch (databaseMetaData.getDatabaseType()) {
+      case MARIADB:
       case MYSQL:
         return null;
       default:

@@ -275,6 +275,7 @@ public class ConnectorRepositoryImpl implements ConnectorRepository {
     addSourceDatabaseConfiguration(DatabaseType.DB2, new Db2SourceDatabaseConfiguration(this));
     addSourceDatabaseConfiguration(DatabaseType.MSSQL, new MsSqlSourceDatabaseConfiguration(this));
     addSourceDatabaseConfiguration(DatabaseType.MYSQL, new MySqlSourceDatabaseConfiguration(this));
+    addSourceDatabaseConfiguration(DatabaseType.MARIADB, new MariaDbSourceDatabaseConfiguration(this));
     addSourceDatabaseConfiguration(DatabaseType.POSTGRESQL, new PostgresqlSourceDatabaseConfiguration(this));
     addSourceDatabaseConfiguration(DatabaseType.ORACLE, new OracleSourceDatabaseConfiguration(this));
     addSourceDatabaseConfiguration(DatabaseType.EXPORT_DUMP, new ImportDumpDatabaseConfiguration(this));
@@ -289,6 +290,7 @@ public class ConnectorRepositoryImpl implements ConnectorRepository {
     addTargetDatabaseConfiguration(DatabaseType.DB2, new Db2TargetDatabaseConfiguration(this));
     addTargetDatabaseConfiguration(DatabaseType.MSSQL, new MsSqlTargetDatabaseConfiguration(this));
     addTargetDatabaseConfiguration(DatabaseType.MYSQL, new MySqlTargetDatabaseConfiguration(this));
+    addTargetDatabaseConfiguration(DatabaseType.MARIADB, new MariaDbTargetDatabaseConfiguration(this));
     addTargetDatabaseConfiguration(DatabaseType.ORACLE, new OracleTargetDatabaseConfiguration(this));
     addTargetDatabaseConfiguration(DatabaseType.POSTGRESQL, new PostgresqlTargetDatabaseConfiguration(this));
     addTargetDatabaseConfiguration(DatabaseType.EXPORT_DUMP, new ExportDumpDatabaseConfiguration(this));

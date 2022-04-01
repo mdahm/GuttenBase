@@ -42,6 +42,7 @@ public class DropTablesTool {
     final String constraintClause;
 
     switch (connectionInfo.getDatabaseType()) {
+      case MARIADB:
       case MYSQL:
         constraintClause = " FOREIGN KEY ";
         break;
