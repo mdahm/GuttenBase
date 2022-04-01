@@ -5,6 +5,8 @@ import de.akquinet.jbosscc.guttenbase.meta.TableMetaData;
 import de.akquinet.jbosscc.guttenbase.repository.DatabaseTableFilter;
 import de.akquinet.jbosscc.guttenbase.utils.Util;
 
+import java.util.Locale;
+
 public class DefaultDatabaseTableFilter implements DatabaseTableFilter {
   @Override
   public String getCatalog(final DatabaseMetaData databaseMetaData) {
@@ -45,6 +47,11 @@ public class DefaultDatabaseTableFilter implements DatabaseTableFilter {
 
   @Override
   public boolean accept(final TableMetaData table) {
-    return true;
+    switch (table.getDatabaseMetaData().getDatabaseType()) {
+      case POSTGRESQL:
+        return !table.getTableName().toLowerCase(Locale.ROOT).startsWith("sql_");
+      default:
+        return true;
+    }
   }
 }
