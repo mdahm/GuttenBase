@@ -90,4 +90,16 @@ public class URLConnectorInfoImpl implements URLConnectorInfo {
   public Connector createConnector(final ConnectorRepository connectorRepository, final String connectorId) {
     return new URLConnector(connectorRepository, connectorId, this);
   }
+
+  @Override
+  public String toString() {
+    return "URLConnectorInfoImpl{" +
+        "url='" + _url + '\'' +
+        ", user='" + _user + '\'' +
+        ", password='********" + '\'' +
+        ", driver='" + _driver + '\'' +
+        ", schema='" + _schema + '\'' +
+        ", databaseType=" + _databaseType +
+        '}';
+  }
 }

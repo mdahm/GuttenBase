@@ -46,9 +46,9 @@ public class DatabaseMetaDataInspectorTool {
   }
 
   public DatabaseMetaData getDatabaseMetaData(final Connection connection) throws SQLException {
-    LOG.info("Retrieving meta data for " + _connectorId);
-
     final ConnectorInfo connectionInfo = _connectorRepository.getConnectionInfo(_connectorId);
+    LOG.info("Retrieving meta data for " + _connectorId + ":" + connectionInfo);
+
     final String schema = connectionInfo.getSchema();
     final String schemaPrefix = "".equals(Util.trim(schema)) ? "" : schema + ".";
     final java.sql.DatabaseMetaData metaData = connection.getMetaData();
