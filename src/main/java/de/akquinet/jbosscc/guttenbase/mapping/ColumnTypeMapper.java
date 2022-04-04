@@ -7,6 +7,5 @@ import de.akquinet.jbosscc.guttenbase.meta.ColumnMetaData;
  * Sometimes data types of columns are not compatible: Allow user to set mapping.
  */
 public interface ColumnTypeMapper {
-  String mapColumnType(final ColumnMetaData columnMetaData, final DatabaseType sourceDatabase, final DatabaseType targetDatabase)
-     ;
+  String mapColumnType(final ColumnMetaData columnMetaData, final DatabaseType sourceDatabase, final DatabaseType targetDatabase);
 }

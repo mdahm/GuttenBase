@@ -23,8 +23,8 @@ import java.util.List;
  * Hint is used by {@link TableOrderHint} to determine order of tables
  */
 public class DropTablesTool {
-  private static final String DEFAULT_INDEX_DROP = "DROP INDEX @@FULL_INDEX_NAME@@;";
-  private static final String POSTGRES_CONSTRAINT_DROP = "ALTER TABLE @@FULL_TABLE_NAME@@ DROP CONSTRAINT @@INDEX_NAME@@;";
+  private static final String DEFAULT_INDEX_DROP = "DROP INDEX @@EXISTS@@ @@FULL_INDEX_NAME@@;";
+  private static final String POSTGRES_CONSTRAINT_DROP = "ALTER TABLE @@FULL_TABLE_NAME@@ DROP CONSTRAINT @@EXISTS@@ @@INDEX_NAME@@;";
 
   final ConnectorRepository _connectorRepository;
 
@@ -39,29 +39,28 @@ public class DropTablesTool {
     final TableMapper tableMapper = _connectorRepository.getConnectorHint(connectorId, TableMapper.class).getValue();
     final List<String> statements = new ArrayList<>();
     final ConnectorInfo connectionInfo = _connectorRepository.getConnectionInfo(connectorId);
-    final String constraintClause;
-
-    switch (connectionInfo.getDatabaseType()) {
-      case MARIADB:
-      case MYSQL:
-        constraintClause = " FOREIGN KEY ";
-        break;
-      default:
-        constraintClause = " CONSTRAINT ";
-        break;
-    }
+    final String constraintClause = getConstraintClause(connectionInfo);
 
     for (final TableMetaData table : tableMetaData) {
       for (final ForeignKeyMetaData foreignKey : table.getImportedForeignKeys()) {
         statements.add("ALTER TABLE " + tableMapper.fullyQualifiedTableName(table, table.getDatabaseMetaData())
-            + " DROP"
-            + constraintClause
-            + foreignKey.getForeignKeyName()
-            + ";");
+            + " DROP" + constraintClause + foreignKey.getForeignKeyName() + ";");
       }
     }
 
     return statements;
+  }
+
+  private String getConstraintClause(final ConnectorInfo connectionInfo) {
+    switch (connectionInfo.getDatabaseType()) {
+      case MARIADB:
+      case MYSQL:
+        return " FOREIGN KEY ";
+      case POSTGRESQL:
+        return " CONSTRAINT IF EXISTS ";
+      default:
+        return " CONSTRAINT ";
+    }
   }
 
   public List<String> createDropIndexesStatements(final String connectorId) {
@@ -70,6 +69,7 @@ public class DropTablesTool {
     final List<String> statements = new ArrayList<>();
     final ConnectorInfo connectionInfo = _connectorRepository.getConnectionInfo(connectorId);
     final TableMapper tableMapper = _connectorRepository.getConnectorHint(connectorId, TableMapper.class).getValue();
+    final boolean posgresql = connectionInfo.getDatabaseType() == DatabaseType.POSTGRESQL;
 
     for (final TableMetaData table : tableMetaData) {
       final String schemaPrefix = table.getDatabaseMetaData().getSchemaPrefix();
@@ -78,20 +78,16 @@ public class DropTablesTool {
       for (final IndexMetaData index : table.getIndexes()) {
         if (!index.isPrimaryKeyIndex()) {
           final String fullIndexName = schemaPrefix + index.getIndexName();
-
-          String constraintClause = DEFAULT_INDEX_DROP;
-
-          if (connectionInfo.getDatabaseType() == DatabaseType.POSTGRESQL && index.isUnique()) {
-            constraintClause = POSTGRES_CONSTRAINT_DROP;
-          }
+          final String existsClause = posgresql ? "IF EXISTS" : "";
+          final String constraintClause = (posgresql && index.isUnique()) ? POSTGRES_CONSTRAINT_DROP : DEFAULT_INDEX_DROP;
 
           statements.add(constraintClause
+              .replaceAll("@@EXISTS@@", existsClause)
               .replaceAll("@@INDEX_NAME@@", index.getIndexName())
               .replaceAll("@@FULL_INDEX_NAME@@", fullIndexName)
               .replaceAll("@@FULL_TABLE_NAME@@", fullTableName));
         }
       }
-
     }
 
     return statements;
