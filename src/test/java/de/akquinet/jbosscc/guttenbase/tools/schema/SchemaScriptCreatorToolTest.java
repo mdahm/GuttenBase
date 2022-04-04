@@ -54,7 +54,7 @@ public class SchemaScriptCreatorToolTest {
 
       @Override
       public ColumnMapper getValue() {
-        return new DefaultColumnMapper(CaseConversionMode.UPPER);
+        return new DefaultColumnMapper(CaseConversionMode.UPPER, "");
       }
     });
 

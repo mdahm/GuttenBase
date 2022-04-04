@@ -88,11 +88,22 @@ public class DefaultColumnTypeMapper implements ColumnTypeMapper {
   }
 
   public final DefaultColumnTypeMapper addMapping(final DatabaseType sourceDB, final DatabaseType targetDB, final String sourceTypeName, String targetTypeName) {
+    addMappingInternal(sourceDB, targetDB, sourceTypeName, targetTypeName);
+
+    if (sourceDB == MYSQL) {
+      addMappingInternal(MARIADB, targetDB, sourceTypeName, targetTypeName);
+    } else if (targetDB == MYSQL) {
+      addMappingInternal(sourceDB, MARIADB, sourceTypeName, targetTypeName);
+    }
+
+    return this;
+  }
+
+  private void addMappingInternal(DatabaseType sourceDB, DatabaseType targetDB, String sourceTypeName, String targetTypeName) {
     final Map<DatabaseType, Map<String, String>> databaseMatrix = _mappings.computeIfAbsent(sourceDB, k -> new HashMap<>());
     final Map<String, String> mapping = databaseMatrix.computeIfAbsent(targetDB, k -> new HashMap<>());
 
     mapping.put(sourceTypeName, targetTypeName);
-    return this;
   }
 
   private void createPostgresToMysqlMapping() {
@@ -194,34 +205,30 @@ public class DefaultColumnTypeMapper implements ColumnTypeMapper {
   }
 
   private void createDB2ToMssqlMapping() {
-
-    //TODO-ergänzen
     addMapping(DatabaseType.DB2, MSSQL, "BLOB", "VARBINARY");
-    // addMapping(DatabaseType.DB2, DatabaseType.MSSQL, "INT4", "INT");
-
   }
-
 
   private void createMysqlToPostresMapping() {
     addMapping(MYSQL, POSTGRESQL, "BIGINT AUTO_INCREMENT", "BIGSERIAL");
     addMapping(MYSQL, POSTGRESQL, "BIGINT UNSIGNED", "NUMERIC(20)");
+    addMapping(MYSQL, POSTGRESQL, "INTEGER UNSIGNED", "BIGINT");
+    addMapping(MYSQL, POSTGRESQL, "INT UNSIGNED", "BIGINT");
+    addMapping(MYSQL, POSTGRESQL, "MEDIUMINT UNSIGNED", "INTEGER");
     addMapping(MYSQL, POSTGRESQL, "BINARY", "BYTEA");
     addMapping(MYSQL, POSTGRESQL, "BLOB", "BYTEA");
     addMapping(MYSQL, POSTGRESQL, "DATETIME", "TIMESTAMP");
     addMapping(MYSQL, POSTGRESQL, "DOUBLE", "DOUBLE PRECISION");
     addMapping(MYSQL, POSTGRESQL, "FLOAT", "REAL");
-    addMapping(MYSQL, POSTGRESQL, "INT UNSIGNED", "BIGINT");
     addMapping(MYSQL, POSTGRESQL, "INTEGER AUTO_INCREMENT", "SERIAL");
     addMapping(MYSQL, POSTGRESQL, "LONGBLOB", "BYTEA");
     addMapping(MYSQL, POSTGRESQL, "LONGTEXT", "TEXT");
     addMapping(MYSQL, POSTGRESQL, "MEDIUMINT", "INTEGER");
-    addMapping(MYSQL, POSTGRESQL, "MEDIUMINT UNSIGNED", "INTEGER");
     addMapping(MYSQL, POSTGRESQL, "MEDIUMBLOB", "BYTEA");
     addMapping(MYSQL, POSTGRESQL, "MEDIUMTEXT", "TEXT");
     addMapping(MYSQL, POSTGRESQL, "SMALLINT AUTO_INCREMENT", "SMALLSERIAL");
     addMapping(MYSQL, POSTGRESQL, "SMALLINT UNSIGNED", "INTEGER");
     addMapping(MYSQL, POSTGRESQL, "TINYBLOB", "BYTEA");
-    addMapping(MYSQL, POSTGRESQL, "TINYINT", "SMALLINT");
+    addMapping(MYSQL, POSTGRESQL, "TINYINT", "NUMERIC(1)");
     addMapping(MYSQL, POSTGRESQL, "TINYINT AUTO_INCREMENT", "SMALLSERIAL");
     addMapping(MYSQL, POSTGRESQL, "TINYINT UNSIGNED", "SMALLSERIAL");
     addMapping(MYSQL, POSTGRESQL, "TINYTEXT", "TEXT");

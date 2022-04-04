@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * By default return column with same name ignoring case.
+ * By default, return column with same name ignoring case. You may however configure case and escaping the column names explicitely.
  * <p>
  * &copy; 2012-2034 akquinet tech@spree
  * </p>
@@ -19,19 +19,23 @@ import java.util.List;
  */
 public class DefaultColumnMapper implements ColumnMapper {
   private final CaseConversionMode _caseConversionMode;
+  private final String _escapeCharacter;
 
-  public DefaultColumnMapper(final CaseConversionMode caseConversionMode) {
+  public DefaultColumnMapper(final CaseConversionMode caseConversionMode, final String escapeCharacter) {
     assert caseConversionMode != null : "caseConversionMode != null";
+    assert escapeCharacter != null : "escapeCharacter != null";
+
+    _escapeCharacter = escapeCharacter;
     _caseConversionMode = caseConversionMode;
   }
 
   public DefaultColumnMapper() {
-    this(CaseConversionMode.NONE);
+    this(CaseConversionMode.NONE, "");
   }
 
   @Override
   public String mapColumnName(final ColumnMetaData columnMetaData, final TableMetaData targetTableMetaData) {
-    return _caseConversionMode.convert(columnMetaData.getColumnName());
+    return _escapeCharacter + _caseConversionMode.convert(columnMetaData.getColumnName()) + _escapeCharacter;
   }
 
   @Override
