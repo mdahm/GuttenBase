@@ -37,7 +37,7 @@ public abstract class AbstractSelectStatementCreator extends AbstractStatementCr
     final List<ColumnMetaData> columns = ColumnOrderHint.getSortedColumns(_connectorRepository, _connectorId, tableMetaData);
     final String sql = createSQL(tableName, tableMetaData, columns);
 
-    LOG.debug("Create SELECT statement " + sql);
+    LOG.debug("Create SELECT statement: " + sql);
 
     final PreparedStatement preparedStatement = connection.prepareStatement(sql, resultSetParameters.getResultSetType(tableMetaData), resultSetParameters.getResultSetConcurrency(tableMetaData));
 

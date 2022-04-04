@@ -36,7 +36,7 @@ public abstract class AbstractInsertStatementCreator extends AbstractStatementCr
     final int numberOfValuesClauses = useMultipleValuesClauses ? numberOfRowsPerBatch : 1;
     final String sql = createSQL(sourceConnectorId, sourceTableMetaData, targetTableName, targetTableMetaData, numberOfValuesClauses);
 
-    LOG.debug("Create INSERT statement " + sql);
+    LOG.debug("Create INSERT statement: " + sql);
     return destConnection.prepareStatement(sql);
   }
 
