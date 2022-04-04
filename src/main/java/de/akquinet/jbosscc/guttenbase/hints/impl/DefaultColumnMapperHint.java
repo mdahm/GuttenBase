@@ -1,6 +1,5 @@
 package de.akquinet.jbosscc.guttenbase.hints.impl;
 
-import de.akquinet.jbosscc.guttenbase.defaults.impl.DefaultColumnMapper;
 import de.akquinet.jbosscc.guttenbase.hints.ColumnMapperHint;
 import de.akquinet.jbosscc.guttenbase.mapping.ColumnMapper;
 
@@ -14,8 +13,14 @@ import de.akquinet.jbosscc.guttenbase.mapping.ColumnMapper;
  * @author M. Dahm
  */
 public class DefaultColumnMapperHint extends ColumnMapperHint {
+  private final ColumnMapper _columnMapper;
+
+  public DefaultColumnMapperHint(final ColumnMapper columnMapper) {
+    _columnMapper = columnMapper;
+  }
+
   @Override
   public ColumnMapper getValue() {
-    return new DefaultColumnMapper();
+    return _columnMapper;
   }
 }

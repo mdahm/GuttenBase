@@ -7,11 +7,14 @@ import de.akquinet.jbosscc.guttenbase.connector.Connector;
 import de.akquinet.jbosscc.guttenbase.connector.ConnectorInfo;
 import de.akquinet.jbosscc.guttenbase.connector.DatabaseType;
 import de.akquinet.jbosscc.guttenbase.connector.GuttenBaseException;
+import de.akquinet.jbosscc.guttenbase.defaults.impl.DefaultColumnMapper;
 import de.akquinet.jbosscc.guttenbase.export.ExportDumpDatabaseConfiguration;
 import de.akquinet.jbosscc.guttenbase.export.ImportDumpDatabaseConfiguration;
+import de.akquinet.jbosscc.guttenbase.hints.CaseConversionMode;
 import de.akquinet.jbosscc.guttenbase.hints.ConnectorHint;
 import de.akquinet.jbosscc.guttenbase.hints.RepositoryTableFilterHint;
 import de.akquinet.jbosscc.guttenbase.hints.impl.*;
+import de.akquinet.jbosscc.guttenbase.mapping.ColumnMapper;
 import de.akquinet.jbosscc.guttenbase.meta.*;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.repository.RepositoryColumnFilter;
@@ -56,7 +59,7 @@ public class ConnectorRepositoryImpl implements ConnectorRepository {
     assert connectionInfo != null : "connectionInfo != null";
     _connectionInfoMap.put(connectorId, connectionInfo);
 
-    initDefaultHints(connectorId);
+    initDefaultHints(connectorId, connectionInfo);
   }
 
   /**
@@ -247,8 +250,7 @@ public class ConnectorRepositoryImpl implements ConnectorRepository {
     return new ArrayList<>(_connectionInfoMap.keySet());
   }
 
-  private DatabaseMetaData createResultWithFilteredTables(final String connectorId, final DatabaseMetaData databaseMetaData)
-      {
+  private DatabaseMetaData createResultWithFilteredTables(final String connectorId, final DatabaseMetaData databaseMetaData) {
     final InternalDatabaseMetaData resultDatabaseMetaData = Util.copyObject(InternalDatabaseMetaData.class,
         (InternalDatabaseMetaData) databaseMetaData);
     final RepositoryTableFilter tableFilter = getConnectorHint(connectorId, RepositoryTableFilter.class).getValue();
@@ -301,7 +303,7 @@ public class ConnectorRepositoryImpl implements ConnectorRepository {
     addTargetDatabaseConfiguration(DatabaseType.MS_ACCESS, new MsAccessTargetDatabaseConfiguration(this));
   }
 
-  private void initDefaultHints(final String connectorId) {
+  private void initDefaultHints(final String connectorId, ConnectorInfo connectorInfo) {
     addConnectorHint(connectorId, new DefaultRepositoryTableFilterHint());
     addConnectorHint(connectorId, new DefaultDatabaseTableFilterHint());
     addConnectorHint(connectorId, new DefaultDatabaseColumnFilterHint());
@@ -319,7 +321,9 @@ public class ConnectorRepositoryImpl implements ConnectorRepository {
     addConnectorHint(connectorId, new DefaultTableOrderHint());
     addConnectorHint(connectorId, new DefaultColumnOrderHint());
     addConnectorHint(connectorId, new DefaultTableMapperHint());
-    addConnectorHint(connectorId, new DefaultColumnMapperHint());
+
+    addConnectorHint(connectorId, new DefaultColumnMapperHint(createColumnMapperHint(connectorInfo)));
+
     addConnectorHint(connectorId, new DefaultRepositoryColumnFilterHint());
     addConnectorHint(connectorId, new DefaultExportDumpExtraInformationHint());
     addConnectorHint(connectorId, new DefaultImportDumpExtraInformationHint());
@@ -329,5 +333,17 @@ public class ConnectorRepositoryImpl implements ConnectorRepository {
     addConnectorHint(connectorId, new DefaultColumnTypeMapperHint());
     addConnectorHint(connectorId, new DefaultSelectWhereClauseHint());
     addConnectorHint(connectorId, new DefaultTableRowCountFilterHint());
+  }
+
+  private ColumnMapper createColumnMapperHint(final ConnectorInfo connectorInfo) {
+    switch (connectorInfo.getDatabaseType()) {
+      case MYSQL:
+      case MARIADB:
+        return new DefaultColumnMapper(CaseConversionMode.NONE, "`");
+      case POSTGRESQL:
+        return new DefaultColumnMapper(CaseConversionMode.NONE, "\"");
+      default:
+        return new DefaultColumnMapper();
+    }
   }
 }
