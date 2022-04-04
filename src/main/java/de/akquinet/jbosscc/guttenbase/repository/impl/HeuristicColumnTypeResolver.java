@@ -22,7 +22,6 @@ public class HeuristicColumnTypeResolver implements ColumnTypeResolver {
   public ColumnType getColumnType(final ColumnMetaData columnMetaData) {
     final String columnType = columnMetaData.getColumnTypeName().toUpperCase();
     final DatabaseType databaseType = columnMetaData.getTableMetaData().getDatabaseMetaData().getDatabaseType();
-
     final ColumnType result = checkDatabaseSpecificTypes(columnType, databaseType);
 
     if (result == null) {
@@ -61,7 +60,7 @@ public class HeuristicColumnTypeResolver implements ColumnTypeResolver {
           case "OID":
             return ColumnType.CLASS_BLOB;
           case "BYTEA":
-            return ColumnType.CLASS_STRING;
+            return ColumnType.CLASS_BYTES;
         }
         break;
 
