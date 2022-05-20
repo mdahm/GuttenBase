@@ -12,7 +12,7 @@ import java.sql.Blob;
 import java.sql.SQLException;
 
 /**
- * Map BLOB object to String using given charset. Use in conjunction with {@link DefaultColumnDataMapperProvider}
+ * Map BLOB object to String using given charset. Use in conjunction with {@link de.akquinet.jbosscc.guttenbase.defaults.impl.DefaultColumnDataMapperProvider}
  *
  * <p>
  * &copy; 2012-2034 akquinet tech@spree
