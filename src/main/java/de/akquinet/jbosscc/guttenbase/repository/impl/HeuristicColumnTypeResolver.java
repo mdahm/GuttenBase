@@ -41,6 +41,8 @@ public class HeuristicColumnTypeResolver implements ColumnTypeResolver {
         return ColumnType.CLASS_BOOLEAN;
       } else if (columnType.equals("BYTEA") || columnType.startsWith("VARBINARY")) {
         return ColumnType.CLASS_BLOB;
+      } else if (columnType.startsWith("TIMESTAMP")) {
+        return ColumnType.CLASS_TIMESTAMP;
       } else {
         return ColumnType.valueForClass(columnMetaData.getColumnClassName());
       }
