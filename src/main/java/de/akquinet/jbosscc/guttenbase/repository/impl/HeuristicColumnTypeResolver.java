@@ -25,7 +25,7 @@ public class HeuristicColumnTypeResolver implements ColumnTypeResolver {
     final ColumnType result = checkDatabaseSpecificTypes(columnType, databaseType);
 
     if (result == null) {
-      if (columnType.endsWith("CHAR") || columnType.endsWith("TEXT") || columnType.startsWith("CHAR")) {
+      if (columnType.endsWith("CHAR") || columnType.endsWith("TEXT") || columnType.startsWith("CHAR") || columnType.startsWith("VARCHAR")) {
         return ColumnType.CLASS_STRING;
       } else if ("BIGINT".equals(columnType)) {
         return ColumnType.CLASS_LONG;

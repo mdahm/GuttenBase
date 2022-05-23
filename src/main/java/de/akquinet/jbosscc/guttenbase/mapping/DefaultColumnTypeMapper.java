@@ -21,6 +21,7 @@ public class DefaultColumnTypeMapper implements ColumnTypeMapper {
 
   public DefaultColumnTypeMapper() {
     createPostgresToMysqlMapping();
+    createOracleToPostgresMapping();
     createMysqlToPostresMapping();
     createMysqlToOracle();
     createOracleToMysql();
@@ -73,7 +74,6 @@ public class DefaultColumnTypeMapper implements ColumnTypeMapper {
   }
 
   public String getMapping(final DatabaseType sourceDB, final DatabaseType targetDB, final String columnType) {
-
     final Map<DatabaseType, Map<String, String>> databaseMatrix = _mappings.get(sourceDB);
 
     if (databaseMatrix != null) {
@@ -140,6 +140,12 @@ public class DefaultColumnTypeMapper implements ColumnTypeMapper {
     addMapping(POSTGRESQL, MYSQL, "OID", "BLOB");
   }
 
+  private void createOracleToPostgresMapping() {
+    addMapping(ORACLE, POSTGRESQL, "NUMBER", "NUMERIC");
+    addMapping(ORACLE, POSTGRESQL, "VARCHAR2", "VARCHAR");
+    addMapping(ORACLE, POSTGRESQL, "RAW", "BYTEA");
+  }
+
   private void createPostgresToOracleMapping() {
     addMapping(POSTGRESQL, ORACLE, "BPCHAR(1)", "CHAR(1)");
     addMapping(POSTGRESQL, ORACLE, "BPCHAR", "CHAR");
@@ -149,7 +155,6 @@ public class DefaultColumnTypeMapper implements ColumnTypeMapper {
     addMapping(POSTGRESQL, ORACLE, "BIGSERIAL", "NUMBER(19)");
     addMapping(POSTGRESQL, ORACLE, "OID", "BLOB");
   }
-
 
   private void createH2ToDerbyMapping() {
 
@@ -198,10 +203,7 @@ public class DefaultColumnTypeMapper implements ColumnTypeMapper {
   }
 
   private void createDB2ToPostgresMapping() {
-
-    //TODO - ergänzen
     addMapping(DatabaseType.DB2, POSTGRESQL, "BLOB", "BYTEA");
-
   }
 
   private void createDB2ToMssqlMapping() {
@@ -279,7 +281,6 @@ public class DefaultColumnTypeMapper implements ColumnTypeMapper {
     addMapping(ORACLE, MYSQL, "NUMBER(5, 0)", "SMALLINT");
     addMapping(ORACLE, MYSQL, "DATE", "TIME");                //TIMESTAMP
     addMapping(ORACLE, MYSQL, "BYTEA", "VARBINARY");
-
   }
 
   private void createMssqlToOracle() {
