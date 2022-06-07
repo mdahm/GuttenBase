@@ -68,8 +68,9 @@ public class DefaultColumnTypeMapper implements ColumnTypeMapper {
       case Types.CHAR:
       case Types.VARCHAR:
       case Types.VARBINARY:
-        return "(" + columnMetaData.getPrecision() + ")";
+        final int precision = columnMetaData.getPrecision();
 
+        return precision > 0 ? "(" + precision + ")" : "";
       default:
         return "";
     }
