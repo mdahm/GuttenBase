@@ -145,7 +145,7 @@ public class SchemaScriptCreatorTool {
 
     return "CREATE TABLE " + tableName + "\n(\n"
         + tableMetaData.getColumnMetaData().stream()
-        .map(columnMetaData -> "  " + getColumn(columnMetaData)).collect(Collectors.joining(",\n"))
+        .map(columnMetaData -> "  " + createColumn(columnMetaData)).collect(Collectors.joining(",\n"))
         + "\n);";
   }
 
@@ -244,10 +244,6 @@ public class SchemaScriptCreatorTool {
         + tableMapper.fullyQualifiedTableName(foreignKeyMetaData.getReferencedTableMetaData(), targetDatabaseMetaData)
         + foreignKeyMetaData.getReferencedColumns().stream().map(this::getColumnName).collect(Collectors.joining(", ", "(", ")"))
         + ";";
-  }
-
-  private String getColumn(ColumnMetaData columnMetaData) {
-    return createColumn(columnMetaData);
   }
 
   private String getColumnName(final ColumnMetaData referencingColumn) {

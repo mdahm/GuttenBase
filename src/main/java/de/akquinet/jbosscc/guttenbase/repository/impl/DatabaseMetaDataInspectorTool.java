@@ -265,8 +265,7 @@ public class DatabaseMetaDataInspectorTool {
       final int scale = meta.getScale(i);
 
       final ColumnMetaDataImpl column = new ColumnMetaDataImpl(columnType, columnName, columnTypeName, columnClassName,
-          isNullable,
-          isAutoIncrement, precision, scale, tableMetaData);
+          isNullable, isAutoIncrement, precision, scale, tableMetaData);
 
       if (columnFilter.accept(column)) {
         tableMetaData.addColumn(column);

@@ -159,6 +159,7 @@ public class SchemaScriptCreatorToolTest {
           @Override
           public String mapColumnType(ColumnMetaData columnMetaData, DatabaseType sourceDatabaseType, DatabaseType targetDatabaseType) {
             final String columnType = super.mapColumnType(columnMetaData, sourceDatabaseType, targetDatabaseType);
+
             if (columnMetaData.getColumnName().equalsIgnoreCase("ID")) {
               return columnType + " auto_increment";
             } else {

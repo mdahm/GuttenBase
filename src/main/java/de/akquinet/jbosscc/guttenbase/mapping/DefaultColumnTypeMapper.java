@@ -48,7 +48,9 @@ public class DefaultColumnTypeMapper implements ColumnTypeMapper {
     final String notNull = columnMetaData.isNullable() ? "" : " NOT NULL";
 
     if (targetColumnType != null) {
-      return targetColumnType + notNull;
+      final String precision = createPrecisionClause(columnMetaData);
+
+      return targetColumnType + precision + notNull;
     } else {
       return getColumnType(columnMetaData) + notNull;
     }
