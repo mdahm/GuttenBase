@@ -2,11 +2,11 @@ package de.akquinet.jbosscc.guttenbase.hints;
 
 import de.akquinet.jbosscc.guttenbase.configuration.TestDerbyConnectionInfo;
 import de.akquinet.jbosscc.guttenbase.configuration.TestH2ConnectionInfo;
+import de.akquinet.jbosscc.guttenbase.hints.impl.DisableMultipleNumberOfRowsPerBatchHint;
 import de.akquinet.jbosscc.guttenbase.mapping.TableRowDataFilter;
 import de.akquinet.jbosscc.guttenbase.meta.TableMetaData;
 import de.akquinet.jbosscc.guttenbase.tools.AbstractGuttenBaseTest;
 import de.akquinet.jbosscc.guttenbase.tools.DefaultTableCopyTool;
-import de.akquinet.jbosscc.guttenbase.tools.NumberOfRowsPerBatch;
 import de.akquinet.jbosscc.guttenbase.tools.ScriptExecutorTool;
 import org.junit.Before;
 import org.junit.Test;
@@ -61,22 +61,7 @@ public class TableRowDataFilterTest extends AbstractGuttenBaseTest {
 
   @Test
   public void testOmitData() throws Exception {
-    _connectorRepository.addConnectorHint(TARGET, new NumberOfRowsPerBatchHint() {
-      @Override
-      public NumberOfRowsPerBatch getValue() {
-        return new NumberOfRowsPerBatch() {
-          @Override
-          public int getNumberOfRowsPerBatch(final TableMetaData targetTableMetaData) {
-            return 1;
-          }
-
-          @Override
-          public boolean useMultipleValuesClauses(final TableMetaData targetTableMetaData) {
-            return false;
-          }
-        };
-      }
-    });
+    _connectorRepository.addConnectorHint(TARGET, new DisableMultipleNumberOfRowsPerBatchHint());
 
     new DefaultTableCopyTool(_connectorRepository).copyTables(SOURCE, TARGET);
 
