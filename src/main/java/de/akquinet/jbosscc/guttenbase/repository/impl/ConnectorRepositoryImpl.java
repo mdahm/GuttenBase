@@ -333,6 +333,7 @@ public class ConnectorRepositoryImpl implements ConnectorRepository {
     addConnectorHint(connectorId, new DefaultColumnTypeMapperHint());
     addConnectorHint(connectorId, new DefaultSelectWhereClauseHint());
     addConnectorHint(connectorId, new DefaultTableRowCountFilterHint());
+    addConnectorHint(connectorId, new DefaultTableRowDataFilterHint());
   }
 
   private ColumnMapper createColumnMapperHint(final ConnectorInfo connectorInfo) {

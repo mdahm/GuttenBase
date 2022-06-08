@@ -8,6 +8,7 @@ import de.akquinet.jbosscc.guttenbase.hints.ColumnOrderHint;
 import de.akquinet.jbosscc.guttenbase.mapping.ColumnMapper;
 import de.akquinet.jbosscc.guttenbase.mapping.ColumnMapper.ColumnMapperResult;
 import de.akquinet.jbosscc.guttenbase.mapping.ColumnTypeMapping;
+import de.akquinet.jbosscc.guttenbase.mapping.TableRowDataFilter;
 import de.akquinet.jbosscc.guttenbase.meta.ColumnMetaData;
 import de.akquinet.jbosscc.guttenbase.meta.TableMetaData;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
@@ -21,7 +22,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Fill previously created INSERT statement with data from source connector.
@@ -51,12 +54,16 @@ public class InsertStatementFiller {
     final List<ColumnMetaData> sourceColumns = ColumnOrderHint.getSortedColumns(_connectorRepository, sourceConnectorId,
         sourceTableMetaData);
     final ColumnMapper columnMapper = _connectorRepository.getConnectorHint(targetConnectorId, ColumnMapper.class).getValue();
+    final TableRowDataFilter filter = _connectorRepository.getConnectorHint(targetConnectorId, TableRowDataFilter.class).getValue();
     final DatabaseType targetDatabaseType = targetTableMetaData.getDatabaseMetaData().getDatabaseType();
     int targetColumnIndex = 1;
     int dataItemsCount = 0;
 
     for (int currentRow = 0; currentRow < numberOfRowsPerBatch; currentRow++) {
       final boolean ok = rs.next();
+      final Map<ColumnMetaData, Object> sourceValues = new LinkedHashMap<>();
+      final Map<ColumnMetaData, Object> targetValues = new LinkedHashMap<>();
+      boolean insertData = true;
 
       if (!ok) {
         throw new MissingDataException("No more data in row " + currentRow + "/" + numberOfRowsPerBatch + " in " +
@@ -84,11 +91,13 @@ public class InsertStatementFiller {
         for (final ColumnMetaData targetColumnMetaData : mapping.getColumns()) {
           final ColumnTypeMapping columnTypeMapping = findMapping(targetConnectorId, commonColumnTypeResolver,
               sourceColumnMetaData, targetColumnMetaData);
+          final Object sourceValue = columnTypeMapping.getSourceColumnType().getValue(rs, columnIndex);
+          final Object targetValue = columnTypeMapping.getColumnDataMapper().map(sourceColumnMetaData, targetColumnMetaData, sourceValue);
+          final Closeable optionalCloseableObject = columnTypeMapping.getTargetColumnType()
+              .setValue(insertStatement, targetColumnIndex++, targetValue, targetDatabaseType, targetColumnMetaData.getColumnType());
 
-          Object value = columnTypeMapping.getSourceColumnType().getValue(rs, columnIndex);
-          value = columnTypeMapping.getColumnDataMapper().map(sourceColumnMetaData, targetColumnMetaData, value);
-          Closeable optionalCloseableObject = columnTypeMapping.getTargetColumnType().setValue(insertStatement, targetColumnIndex++, value, targetDatabaseType,
-              targetColumnMetaData.getColumnType());
+          sourceValues.put(sourceColumnMetaData, sourceValue);
+          targetValues.put(targetColumnMetaData, targetValue);
 
           if (optionalCloseableObject != null) {
             _closeableObjects.add(optionalCloseableObject);
@@ -98,9 +107,22 @@ public class InsertStatementFiller {
         }
       }
 
+      // reset insert statement
+      if (!filter.accept(sourceValues, targetValues)) {
+        if (useMultipleValuesClauses) {
+          throw new SQLException(TableRowDataFilter.class.getSimpleName() + " hint must not be used, if NumberOfRowsPerBatch hint allows multiple VALUES(...) clauses.\n" +
+              "Please disable it for table " + targetTableMetaData);
+        }
+
+        insertData = false;
+      }
+
       // Add another INSERT with one VALUES clause to BATCH
       if (!useMultipleValuesClauses) {
-        insertStatement.addBatch();
+        if (insertData) {
+          insertStatement.addBatch();
+        }
+
         targetColumnIndex = 1;
       }
 
