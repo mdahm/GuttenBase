@@ -104,24 +104,22 @@ public class ScriptExecutorTool {
     }
 
     final TargetDatabaseConfiguration targetDatabaseConfiguration = _connectorRepository.getTargetDatabaseConfiguration(connectorId);
+    final List<String> sqlStatements = new SQLLexer(lines, _delimiter).parse();
+
     _progressIndicator = _connectorRepository.getConnectorHint(connectorId, ScriptExecutorProgressIndicator.class).getValue();
     _progressIndicator.initializeIndicator();
 
-    final List<String> sqlStatements = new SQLLexer(lines, _delimiter).parse();
-    final Connector connector = _connectorRepository.createConnector(connectorId);
-    final Connection connection = connector.openConnection();
+    try (final Connector connector = _connectorRepository.createConnector(connectorId);
+         final Connection connection = connector.openConnection();
+         final Statement statement = connection.createStatement()) {
+      if (prepareTargetConnection) {
+        targetDatabaseConfiguration.initializeTargetConnection(connection, connectorId);
+      }
 
-    if (prepareTargetConnection) {
-      targetDatabaseConfiguration.initializeTargetConnection(connection, connectorId);
-    }
+      if (connection.getAutoCommit()) {
+        connection.setAutoCommit(false);
+      }
 
-    if (connection.getAutoCommit()) {
-      connection.setAutoCommit(false);
-    }
-
-    final Statement statement = connection.createStatement();
-
-    try {
       _progressIndicator.startProcess(sqlStatements.size());
 
       for (final String sql : sqlStatements) {
@@ -130,8 +128,6 @@ public class ScriptExecutorTool {
         _progressIndicator.endExecution(1);
         _progressIndicator.endProcess();
       }
-
-      statement.close();
 
       if (!connection.getAutoCommit() && targetDatabaseConfiguration.isMayCommit()) {
         connection.commit();
@@ -145,12 +141,9 @@ public class ScriptExecutorTool {
         targetDatabaseConfiguration.finalizeTargetConnection(connection, connectorId);
       }
 
-
       if (scriptUpdatesSchema) {
         _connectorRepository.refreshDatabaseMetaData(connectorId);
       }
-    } finally {
-      connector.closeConnection();
     }
 
     _progressIndicator.finalizeIndicator();
@@ -164,29 +157,58 @@ public class ScriptExecutorTool {
    */
   @SuppressWarnings("JavaDoc")
   public List<Map<String, Object>> executeQuery(final String connectorId, final String sql) throws SQLException {
-    final Connector connector = _connectorRepository.createConnector(connectorId);
-
-    try {
+    try (final Connector connector = _connectorRepository.createConnector(connectorId)) {
       final Connection connection = connector.openConnection();
       return executeQuery(connection, sql);
-    } finally {
-      connector.closeConnection();
     }
   }
 
+  /**
+   * Execute query (i.e. SELECT...) and execute the given command on each row of data
+   *
+   * @throws SQLException
+   */
+  public <R> void executeQuery(final String connectorId, final String sql, final Command<R> action) throws SQLException {
+    try (final Connector connector = _connectorRepository.createConnector(connectorId)) {
+      final Connection connection = connector.openConnection();
+      executeQuery(connection, sql, action);
+    }
+  }
+
+  @FunctionalInterface
+  public interface Command<T> {
+    T execute(final Connection connection, final Map<String, Object> data) throws SQLException;
+  }
+
+  /**
+   * Execute query (i.e. SELECT...) and return the result set as a list of Maps where the key is the column name and the value the
+   * respective data.
+   *
+   * @throws SQLException
+   */
   public List<Map<String, Object>> executeQuery(final Connection connection, final String sql) throws SQLException {
     final List<Map<String, Object>> result = new ArrayList<>();
 
-    final Statement statement = connection.createStatement();
-    final ResultSet resultSet = statement.executeQuery(sql);
-
-    readMapFromResultSet(result, resultSet);
-    resultSet.close();
+    try (final Statement statement = connection.createStatement(); final ResultSet resultSet = statement.executeQuery(sql)) {
+      readMapFromResultSet(connection, resultSet, (tool, data) -> result.add(data));
+    }
 
     return result;
   }
 
-  private void readMapFromResultSet(final List<Map<String, Object>> result, final ResultSet resultSet) throws SQLException {
+  /**
+   * Execute query (i.e. SELECT...) and execute the given command on each row of data
+   *
+   * @throws SQLException
+   */
+  public <R> void executeQuery(final Connection connection, final String sql, final Command<R> action) throws SQLException {
+    try (final Statement statement = connection.createStatement();
+         final ResultSet resultSet = statement.executeQuery(sql)) {
+      readMapFromResultSet(connection, resultSet, action);
+    }
+  }
+
+  private <R> void readMapFromResultSet(final Connection connection, final ResultSet resultSet, final Command<R> action) throws SQLException {
     final ResultSetMetaData metaData = resultSet.getMetaData();
 
     while (resultSet.next()) {
@@ -200,7 +222,7 @@ public class ScriptExecutorTool {
         map.put(columnName, value);
       }
 
-      result.add(map);
+      action.execute(connection, map);
     }
   }
 
@@ -210,13 +232,12 @@ public class ScriptExecutorTool {
     final boolean result = statement.execute(sql);
 
     if (result) {
-      final List<Map<String, Object>> resultMap = new ArrayList<>();
-
-      final ResultSet resultSet = statement.getResultSet();
-      readMapFromResultSet(resultMap, resultSet);
-      resultSet.close();
-
-      _progressIndicator.info("Query result: " + resultMap);
+      try (final ResultSet resultSet = statement.getResultSet()) {
+        readMapFromResultSet(statement.getConnection(), resultSet, (tool, map) -> {
+          _progressIndicator.info("Query result: " + map);
+          return null;
+        });
+      }
     } else {
       final int updateCount = statement.getUpdateCount();
       _progressIndicator.info("Update count: " + updateCount);

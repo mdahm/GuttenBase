@@ -94,6 +94,7 @@ public class ScriptExecutorTest {
     final Connection connection = _connectionInfo.getConnection();
     final PreparedStatement statement = _connectionInfo.getPreparedStatement();
 
+    expect(statement.getConnection()).andReturn(connection).anyTimes();
     expect(connection.createStatement()).andReturn(statement).anyTimes();
     expect(connection.isClosed()).andReturn(false).anyTimes();
     expect(connection.getAutoCommit()).andReturn(false).anyTimes();
@@ -102,6 +103,7 @@ public class ScriptExecutorTest {
     expectLastCall().atLeastOnce();
 
     connection.close();
+    expectLastCall().atLeastOnce();
   }
 
   private String equalSql(final String expected) {

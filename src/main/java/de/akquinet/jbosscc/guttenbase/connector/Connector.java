@@ -14,7 +14,7 @@ import java.sql.SQLException;
  *
  * @author M. Dahm
  */
-public interface Connector {
+public interface Connector extends AutoCloseable {
   /**
    * Open connection or return existing connection
    */
@@ -29,4 +29,9 @@ public interface Connector {
    * Return information about database and tables
    */
   DatabaseMetaData retrieveDatabaseMetaData() throws SQLException;
+
+  default void close() throws SQLException {
+    closeConnection();
+  }
 }
+
