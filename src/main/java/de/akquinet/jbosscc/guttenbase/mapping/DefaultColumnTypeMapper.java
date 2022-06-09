@@ -137,7 +137,7 @@ public class DefaultColumnTypeMapper implements ColumnTypeMapper {
     addMapping(POSTGRESQL, MYSQL, "TIMESTAMP", "DATETIME");
     addMapping(POSTGRESQL, MYSQL, "TSQUERY", "LONGTEXT");
     addMapping(POSTGRESQL, MYSQL, "TSVECTOR", "LONGTEXT");
-    addMapping(POSTGRESQL, MYSQL, "TXID_SNAPSHOT", "VARCHART");
+    addMapping(POSTGRESQL, MYSQL, "TXID_SNAPSHOT", "VARCHAR");
     addMapping(POSTGRESQL, MYSQL, "UUID", "VARCHAR(36)");
     addMapping(POSTGRESQL, MYSQL, "XML", "LONGTEXT");
     addMapping(POSTGRESQL, MYSQL, "OID", "BLOB");
