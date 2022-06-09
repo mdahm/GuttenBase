@@ -8,6 +8,7 @@ import de.akquinet.jbosscc.guttenbase.meta.ForeignKeyMetaData;
 import de.akquinet.jbosscc.guttenbase.meta.IndexMetaData;
 import de.akquinet.jbosscc.guttenbase.meta.TableMetaData;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
+import de.akquinet.jbosscc.guttenbase.utils.Util;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -27,10 +28,22 @@ public class DropTablesTool {
   private static final String POSTGRES_CONSTRAINT_DROP = "ALTER TABLE @@FULL_TABLE_NAME@@ DROP CONSTRAINT @@EXISTS@@ @@INDEX_NAME@@;";
 
   final ConnectorRepository _connectorRepository;
+  private final String _dropTablesSuffix;
+
+  /**
+   * @param connectorRepository connector repository
+   * @param dropTablesSuffix    Some DBs support cascading DROPs, e.g. Postgresql DROP TABLE .... CASCADE;
+   */
+  public DropTablesTool(final ConnectorRepository connectorRepository, final String dropTablesSuffix) {
+    assert connectorRepository != null : "connectorRepository != null";
+    assert dropTablesSuffix != null : "dropTablesSuffix != null";
+
+    _dropTablesSuffix = dropTablesSuffix;
+    _connectorRepository = connectorRepository;
+  }
 
   public DropTablesTool(final ConnectorRepository connectorRepository) {
-    assert connectorRepository != null : "connectorRepository != null";
-    _connectorRepository = connectorRepository;
+    this(connectorRepository, "");
   }
 
   public List<String> createDropForeignKeyStatements(final String connectorId) {
@@ -94,11 +107,11 @@ public class DropTablesTool {
   }
 
   public List<String> createDropTableStatements(final String connectorId) {
-    return createTableStatements(connectorId, "DROP TABLE");
+    return createTableStatements(connectorId, "DROP TABLE", _dropTablesSuffix);
   }
 
   public List<String> createDeleteTableStatements(final String connectorId) {
-    return createTableStatements(connectorId, "DELETE FROM");
+    return createTableStatements(connectorId, "DELETE FROM", "");
   }
 
   public void dropTables(final String targetId) throws SQLException {
@@ -117,14 +130,15 @@ public class DropTablesTool {
     new ScriptExecutorTool(_connectorRepository).executeScript(targetId, true, false, createDropForeignKeyStatements(targetId));
   }
 
-  private List<String> createTableStatements(final String connectorId, final String clausePrefix) {
+  private List<String> createTableStatements(final String connectorId, final String clausePrefix, final String clauseSuffix) {
     final List<TableMetaData> tableMetaData = new TableOrderTool().getOrderedTables(
         TableOrderHint.getSortedTables(_connectorRepository, connectorId), false);
     final List<String> statements = new ArrayList<>();
     final TableMapper tableMapper = _connectorRepository.getConnectorHint(connectorId, TableMapper.class).getValue();
+    final String suffix = "".equals(Util.trim(clauseSuffix)) ? "" : " " + clauseSuffix;
 
     for (final TableMetaData table : tableMetaData) {
-      statements.add(clausePrefix + " " + tableMapper.fullyQualifiedTableName(table, table.getDatabaseMetaData()) + ";");
+      statements.add(clausePrefix + " " + tableMapper.fullyQualifiedTableName(table, table.getDatabaseMetaData()) + suffix + ";");
     }
 
     return statements;
