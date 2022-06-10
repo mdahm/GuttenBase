@@ -173,8 +173,8 @@ public class ScriptExecutorTool {
   }
 
   /**
-   * Execute query (i.e. SELECT...) and return the result set as a list of Maps where the key is the column name and the value the
-   * respective data.
+   * Execute query (i.e. SELECT...) and return the result set as a list of Maps where the key is the upper case column name
+   * and the value is the respective data of the column.
    *
    * @throws SQLException
    */
@@ -210,7 +210,7 @@ public class ScriptExecutorTool {
       final Map<String, Object> map = new HashMap<>();
 
       for (int i = 1; i <= columnCount; i++) {
-        final String columnName = metaData.getColumnName(i);
+        final String columnName = metaData.getColumnName(i).toUpperCase(Locale.ROOT);
         final Object value = resultSet.getObject(i);
 
         map.put(columnName, value);
