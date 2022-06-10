@@ -186,6 +186,15 @@ public class ScriptExecutorTool {
     }
 
     /**
+     * Called after last execution
+     *
+     * @param connection
+     * @throws SQLException
+     */
+    default void finalize(final Connection connection) throws SQLException {
+    }
+
+    /**
      * Executed for each row of data
      *
      * @param connection
@@ -241,6 +250,9 @@ public class ScriptExecutorTool {
 
       action.execute(connection, map);
     }
+
+    action.finalize(connection);
+
   }
 
   private void executeSQL(final Statement statement, final String sql) throws SQLException {
