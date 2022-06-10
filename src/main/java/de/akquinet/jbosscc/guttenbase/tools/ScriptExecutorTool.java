@@ -168,7 +168,7 @@ public class ScriptExecutorTool {
    *
    * @throws SQLException
    */
-  public <R> void executeQuery(final String connectorId, final String sql, final Command action) throws SQLException {
+  public void executeQuery(final String connectorId, final String sql, final Command action) throws SQLException {
     try (final Connector connector = _connectorRepository.createConnector(connectorId)) {
       final Connection connection = connector.openConnection();
       executeQuery(connection, sql, action);
@@ -201,14 +201,14 @@ public class ScriptExecutorTool {
    *
    * @throws SQLException
    */
-  public <R> void executeQuery(final Connection connection, final String sql, final Command action) throws SQLException {
+  public void executeQuery(final Connection connection, final String sql, final Command action) throws SQLException {
     try (final Statement statement = connection.createStatement();
          final ResultSet resultSet = statement.executeQuery(sql)) {
       readMapFromResultSet(connection, resultSet, action);
     }
   }
 
-  private <R> void readMapFromResultSet(final Connection connection, final ResultSet resultSet, final Command action) throws SQLException {
+  private void readMapFromResultSet(final Connection connection, final ResultSet resultSet, final Command action) throws SQLException {
     final ResultSetMetaData metaData = resultSet.getMetaData();
 
     while (resultSet.next()) {
