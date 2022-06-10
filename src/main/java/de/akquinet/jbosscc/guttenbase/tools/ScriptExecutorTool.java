@@ -168,7 +168,7 @@ public class ScriptExecutorTool {
    *
    * @throws SQLException
    */
-  public <R> void executeQuery(final String connectorId, final String sql, final Command<R> action) throws SQLException {
+  public <R> void executeQuery(final String connectorId, final String sql, final Command action) throws SQLException {
     try (final Connector connector = _connectorRepository.createConnector(connectorId)) {
       final Connection connection = connector.openConnection();
       executeQuery(connection, sql, action);
@@ -176,8 +176,8 @@ public class ScriptExecutorTool {
   }
 
   @FunctionalInterface
-  public interface Command<T> {
-    T execute(final Connection connection, final Map<String, Object> data) throws SQLException;
+  public interface Command {
+    void execute(final Connection connection, final Map<String, Object> data) throws SQLException;
   }
 
   /**
@@ -201,14 +201,14 @@ public class ScriptExecutorTool {
    *
    * @throws SQLException
    */
-  public <R> void executeQuery(final Connection connection, final String sql, final Command<R> action) throws SQLException {
+  public <R> void executeQuery(final Connection connection, final String sql, final Command action) throws SQLException {
     try (final Statement statement = connection.createStatement();
          final ResultSet resultSet = statement.executeQuery(sql)) {
       readMapFromResultSet(connection, resultSet, action);
     }
   }
 
-  private <R> void readMapFromResultSet(final Connection connection, final ResultSet resultSet, final Command<R> action) throws SQLException {
+  private <R> void readMapFromResultSet(final Connection connection, final ResultSet resultSet, final Command action) throws SQLException {
     final ResultSetMetaData metaData = resultSet.getMetaData();
 
     while (resultSet.next()) {
@@ -233,10 +233,7 @@ public class ScriptExecutorTool {
 
     if (result) {
       try (final ResultSet resultSet = statement.getResultSet()) {
-        readMapFromResultSet(statement.getConnection(), resultSet, (tool, map) -> {
-          _progressIndicator.info("Query result: " + map);
-          return null;
-        });
+        readMapFromResultSet(statement.getConnection(), resultSet, (tool, map) -> _progressIndicator.info("Query result: " + map));
       }
     } else {
       final int updateCount = statement.getUpdateCount();
