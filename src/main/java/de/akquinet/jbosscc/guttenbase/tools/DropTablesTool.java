@@ -82,7 +82,7 @@ public class DropTablesTool {
     final List<String> statements = new ArrayList<>();
     final ConnectorInfo connectionInfo = _connectorRepository.getConnectionInfo(connectorId);
     final TableMapper tableMapper = _connectorRepository.getConnectorHint(connectorId, TableMapper.class).getValue();
-    final boolean posgresql = connectionInfo.getDatabaseType() == DatabaseType.POSTGRESQL;
+    final boolean postgresql = connectionInfo.getDatabaseType() == DatabaseType.POSTGRESQL;
 
     for (final TableMetaData table : tableMetaData) {
       final String schemaPrefix = table.getDatabaseMetaData().getSchemaPrefix();
@@ -91,8 +91,8 @@ public class DropTablesTool {
       for (final IndexMetaData index : table.getIndexes()) {
         if (!index.isPrimaryKeyIndex()) {
           final String fullIndexName = schemaPrefix + index.getIndexName();
-          final String existsClause = posgresql ? "IF EXISTS" : "";
-          final String constraintClause = (posgresql && index.isUnique()) ? POSTGRES_CONSTRAINT_DROP : DEFAULT_INDEX_DROP;
+          final String existsClause = postgresql ? "IF EXISTS" : "";
+          final String constraintClause = (postgresql && index.isUnique()) ? POSTGRES_CONSTRAINT_DROP : DEFAULT_INDEX_DROP;
 
           statements.add(constraintClause
               .replaceAll("@@EXISTS@@", existsClause)

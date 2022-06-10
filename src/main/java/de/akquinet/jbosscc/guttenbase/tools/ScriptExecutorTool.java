@@ -2,9 +2,6 @@ package de.akquinet.jbosscc.guttenbase.tools;
 
 import de.akquinet.jbosscc.guttenbase.configuration.TargetDatabaseConfiguration;
 import de.akquinet.jbosscc.guttenbase.connector.Connector;
-import de.akquinet.jbosscc.guttenbase.hints.TableOrderHint;
-import de.akquinet.jbosscc.guttenbase.meta.IndexMetaData;
-import de.akquinet.jbosscc.guttenbase.meta.TableMetaData;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.sql.SQLLexer;
 import de.akquinet.jbosscc.guttenbase.utils.ScriptExecutorProgressIndicator;
@@ -175,35 +172,6 @@ public class ScriptExecutorTool {
     }
   }
 
-  public interface Command {
-    /**
-     * Called before first execution
-     *
-     * @param connection
-     * @throws SQLException
-     */
-    default void initialize(final Connection connection) throws SQLException {
-    }
-
-    /**
-     * Called after last execution
-     *
-     * @param connection
-     * @throws SQLException
-     */
-    default void finalize(final Connection connection) throws SQLException {
-    }
-
-    /**
-     * Executed for each row of data
-     *
-     * @param connection
-     * @param data
-     * @throws SQLException
-     */
-    void execute(final Connection connection, final Map<String, Object> data) throws SQLException;
-  }
-
   /**
    * Execute query (i.e. SELECT...) and return the result set as a list of Maps where the key is the column name and the value the
    * respective data.
@@ -270,16 +238,51 @@ public class ScriptExecutorTool {
     }
   }
 
-  public void dropIndexes(final DropTablesTool dropTablesTool, final String connectorId, final boolean updateSchema) throws SQLException {
-    final List<TableMetaData> tableMetaData = TableOrderHint.getSortedTables(dropTablesTool._connectorRepository, connectorId);
-    final List<String> statements = new ArrayList<>();
-
-    for (final TableMetaData table : tableMetaData) {
-      for (final IndexMetaData index : table.getIndexes()) {
-        statements.add("DROP INDEX " + index.getIndexName() + ";");
-      }
+  public interface Command {
+    /**
+     * Called before first execution
+     *
+     * @param connection
+     * @throws SQLException
+     */
+    default void initialize(final Connection connection) throws SQLException {
     }
 
-    executeScript(connectorId, updateSchema, false, statements);
+    /**
+     * Called after last execution
+     *
+     * @param connection
+     * @throws SQLException
+     */
+    default void finalize(final Connection connection) throws SQLException {
+    }
+
+    /**
+     * Executed for each row of data
+     *
+     * @param connection
+     * @param data
+     * @throws SQLException
+     */
+    void execute(final Connection connection, final Map<String, Object> data) throws SQLException;
+  }
+
+  public abstract static class StatementCommand implements Command {
+    protected PreparedStatement _statement;
+    private final String _sql;
+
+    protected StatementCommand(final String sql) {
+      _sql = sql;
+    }
+
+    @Override
+    public void initialize(final Connection connection) throws SQLException {
+      _statement = connection.prepareStatement(_sql);
+    }
+
+    @Override
+    public void finalize(final Connection connection) throws SQLException {
+      _statement.close();
+    }
   }
 }
