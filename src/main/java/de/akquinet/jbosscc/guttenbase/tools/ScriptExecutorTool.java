@@ -175,8 +175,23 @@ public class ScriptExecutorTool {
     }
   }
 
-  @FunctionalInterface
   public interface Command {
+    /**
+     * Called before first execution
+     *
+     * @param connection
+     * @throws SQLException
+     */
+    default void initialize(final Connection connection) throws SQLException {
+    }
+
+    /**
+     * Executed for each row of data
+     *
+     * @param connection
+     * @param data
+     * @throws SQLException
+     */
     void execute(final Connection connection, final Map<String, Object> data) throws SQLException;
   }
 
@@ -210,6 +225,8 @@ public class ScriptExecutorTool {
 
   private void readMapFromResultSet(final Connection connection, final ResultSet resultSet, final Command action) throws SQLException {
     final ResultSetMetaData metaData = resultSet.getMetaData();
+
+    action.initialize(connection);
 
     while (resultSet.next()) {
       final int columnCount = metaData.getColumnCount();
