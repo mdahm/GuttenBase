@@ -281,7 +281,6 @@ public class DefaultColumnTypeMapper implements ColumnTypeMapper {
     addMapping(ORACLE, MYSQL, "NUMBER(7, 0)", "MEDIUMINT");
     addMapping(ORACLE, MYSQL, "NUMBER", "NUMERIC");           //YEAR
     addMapping(ORACLE, MYSQL, "NUMBER(5, 0)", "SMALLINT");
-    addMapping(ORACLE, MYSQL, "DATE", "TIME");                //TIMESTAMP
     addMapping(ORACLE, MYSQL, "BYTEA", "VARBINARY");
   }
 
@@ -311,42 +310,26 @@ public class DefaultColumnTypeMapper implements ColumnTypeMapper {
   }
 
   private void createMysqlToMssqlMapping() {
-
-    //TODO-ergänzen
-
     addMapping(MYSQL, MSSQL, "LONGTEXT", "NVARCHAR(4000)");
     addMapping(MYSQL, MSSQL, "LONGBLOB", "VARBINARY");
     addMapping(MYSQL, MSSQL, "VARCHAR", "NVARCHAR(4000)");
     addMapping(MYSQL, MSSQL, "DECIMAL", "DECIMAL(38)");
-
   }
 
   private void createPostgresToMssqlMapping() {
-
-    //TODO-ergänzen
     addMapping(POSTGRESQL, MSSQL, "TEXT", "NVARCHAR(4000)");
     addMapping(POSTGRESQL, MSSQL, "BYTEA", "BINARY");
     addMapping(POSTGRESQL, MSSQL, "INT4", "INT");
     addMapping(POSTGRESQL, MSSQL, "INT2", "INT");
-
   }
 
   private void createMssqlToMysql() {
-
-    //TODO-ergänzen
-
     addMapping(MSSQL, MYSQL, "NVARCHAR", "VARCHAR(255)");
     addMapping(MSSQL, MYSQL, "VARBINARY", "BLOB");
-
   }
 
   private void createMssqlToPostgres() {
-
-    //TODO-ergänzen
-
     addMapping(MSSQL, POSTGRESQL, "NVARCHAR", "TEXT");
     addMapping(MSSQL, POSTGRESQL, "VARBINARY", "BYTEA");
-
   }
-
 }
