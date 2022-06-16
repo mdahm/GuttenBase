@@ -274,13 +274,12 @@ public class DefaultColumnTypeMapper implements ColumnTypeMapper {
     addMapping(ORACLE, MYSQL, "NUMBER(19, 0)", "BIGINT");
     addMapping(ORACLE, MYSQL, "DATE", "DATETIME");
     addMapping(ORACLE, MYSQL, "FLOAT (24)", "DECIMAL");       // DOUBLE, DOUBLE PRECISION, REAL
-    addMapping(ORACLE, MYSQL, "VARCHAR2", "ENUM");
+    addMapping(ORACLE, MYSQL, "VARCHAR2", "VARCHAR");
     addMapping(ORACLE, MYSQL, "NUMBER(10, 0)", "INT");        // INTEGER
     addMapping(ORACLE, MYSQL, "BLOB", "LONGBLOB");            // MEDIUMBLOB
     addMapping(ORACLE, MYSQL, "CLOB", "MEDIUMTEXT");
     addMapping(ORACLE, MYSQL, "NUMBER(7, 0)", "MEDIUMINT");
     addMapping(ORACLE, MYSQL, "NUMBER", "NUMERIC");           //YEAR
-    addMapping(ORACLE, MYSQL, "VARCHAR2", "SET");             //TEXT, TINYTEXT
     addMapping(ORACLE, MYSQL, "NUMBER(5, 0)", "SMALLINT");
     addMapping(ORACLE, MYSQL, "DATE", "TIME");                //TIMESTAMP
     addMapping(ORACLE, MYSQL, "BYTEA", "VARBINARY");
