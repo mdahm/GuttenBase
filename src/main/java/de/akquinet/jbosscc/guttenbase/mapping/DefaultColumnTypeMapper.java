@@ -40,6 +40,9 @@ public class DefaultColumnTypeMapper implements ColumnTypeMapper {
     createPostgresToOracleMapping();
   }
 
+  /**
+   * @return target database type including precision and optional not null constraint clause
+   */
   @Override
   public String mapColumnType(final ColumnMetaData columnMetaData,
                               final DatabaseType sourceDatabaseType, final DatabaseType targetDatabaseType) {
@@ -56,6 +59,11 @@ public class DefaultColumnTypeMapper implements ColumnTypeMapper {
     }
   }
 
+  /**
+   * Override this method if you just want to change the way column types are mapped
+   *
+   * @return target database type including precision
+   */
   protected String getColumnType(final ColumnMetaData columnMetaData) {
     final String precision = createPrecisionClause(columnMetaData);
     final String defaultColumnType = columnMetaData.getColumnTypeName();
