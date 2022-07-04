@@ -259,7 +259,7 @@
     <!--
         Release from SNAPSHOT version
 
-        mvn clean install deploy -Prelease-sign-artifacts
+        mvn clean deploy -Prelease-sign-artifacts
 
         http://central.sonatype.org/pages/releasing-the-deployment.html
 
