@@ -1,5 +1,16 @@
+What's new in Version 2.0.1
+============================
+
+- Bug fixes Oracle
+- new TableRowDataFilterHint
+- new Command execution interface for ScriptExecutorTool
+- DisableMultipleNumberOfRowsPerBatchHint
+- Column type create fixes
+- Mapping additions and fixes
+
 What's new in Version 2.0
 ============================
+
 - Many fixes and API changes
 - Clarifications
 - Support for Java 8
@@ -8,6 +19,7 @@ What's new in Version 2.0
 
 What's new in Version 1.3
 ============================
+
 - Handling case in table names, etc. improved
 - TableOrderTool computes DROP/CREATE order for tables
 - Sequence handling refactored
