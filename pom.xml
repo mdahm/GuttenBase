@@ -40,6 +40,18 @@
         <url>https://github.com/akquinet/GuttenBase/issues</url>
     </issueManagement>
 
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
     <scm>
         <connection>scm:git:git://github.com/akquinet/GuttenBase.git</connection>
         <url>http://guttenbase.spree.de</url>
@@ -247,7 +259,7 @@
     <!--
         Release from SNAPSHOT version
 
-        mvn clean install deploy -DperformRelease=true
+        mvn clean install deploy -Prelease-sign-artifacts
 
         http://central.sonatype.org/pages/releasing-the-deployment.html
 
@@ -270,7 +282,14 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.5</version>
+                        <version>3.0.1</version>
+
+                        <configuration>
+                            <gpgArguments>
+                                <arg>--pinentry-mode</arg>
+                                <arg>loopback</arg>
+                            </gpgArguments>
+                        </configuration>
 
                         <executions>
                             <execution>
