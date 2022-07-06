@@ -10,7 +10,8 @@ import de.akquinet.jbosscc.guttenbase.repository.DatabaseTableFilter;
 import de.akquinet.jbosscc.guttenbase.repository.TableRowCountFilter;
 import de.akquinet.jbosscc.guttenbase.tools.SelectWhereClause;
 import de.akquinet.jbosscc.guttenbase.utils.Util;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.sql.*;
@@ -28,7 +29,7 @@ import java.util.stream.Collectors;
  */
 @SuppressWarnings("RedundantThrows")
 public class DatabaseMetaDataInspectorTool {
-  private static final Logger LOG = Logger.getLogger(DatabaseMetaDataInspectorTool.class);
+  private static final Logger LOG = LoggerFactory.getLogger(DatabaseMetaDataInspectorTool.class);
 
   private static final String TABLE_PLACEHOLDER = "<table>";
   private static final String SELECT_COUNT_STATEMENT = "SELECT COUNT(*) FROM " + TABLE_PLACEHOLDER;

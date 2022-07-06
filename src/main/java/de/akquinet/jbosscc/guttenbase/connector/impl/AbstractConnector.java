@@ -7,7 +7,8 @@ import de.akquinet.jbosscc.guttenbase.connector.ConnectorInfo;
 import de.akquinet.jbosscc.guttenbase.meta.DatabaseMetaData;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.repository.impl.DatabaseMetaDataInspectorTool;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -22,7 +23,7 @@ import java.sql.SQLException;
  * @author M. Dahm
  */
 public abstract class AbstractConnector implements Connector {
-  protected static final Logger LOG = Logger.getLogger(AbstractConnector.class);
+  protected static final Logger LOG = LoggerFactory.getLogger(AbstractConnector.class);
 
   protected transient Connection _connection;
 

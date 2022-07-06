@@ -4,7 +4,7 @@ import de.akquinet.jbosscc.guttenbase.export.zip.ZipExporter;
 import de.akquinet.jbosscc.guttenbase.export.zip.ZipExporterClassResources;
 import de.akquinet.jbosscc.guttenbase.export.zip.ZipStartup;
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 
 import java.net.URL;
 import java.util.ArrayList;

@@ -1,7 +1,8 @@
 package de.akquinet.jbosscc.guttenbase.connector.impl;
 
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -17,7 +18,7 @@ import java.sql.SQLException;
  * @author M. Dahm
  */
 public abstract class AbstractURLConnector extends AbstractConnector {
-  protected static final Logger LOG = Logger.getLogger(AbstractURLConnector.class);
+  protected static final Logger LOG = LoggerFactory.getLogger(AbstractURLConnector.class);
 
   private final URLConnectorInfo _urlConnectionInfo;
 

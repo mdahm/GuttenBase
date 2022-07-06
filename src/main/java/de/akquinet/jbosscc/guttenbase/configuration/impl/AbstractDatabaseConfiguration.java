@@ -3,7 +3,8 @@ package de.akquinet.jbosscc.guttenbase.configuration.impl;
 import de.akquinet.jbosscc.guttenbase.configuration.DatabaseConfiguration;
 import de.akquinet.jbosscc.guttenbase.meta.TableMetaData;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -19,7 +20,7 @@ import java.sql.Statement;
  * @author M. Dahm
  */
 public abstract class AbstractDatabaseConfiguration implements DatabaseConfiguration {
-  private static final Logger LOG = Logger.getLogger(DatabaseConfiguration.class);
+  private static final Logger LOG = LoggerFactory.getLogger(DatabaseConfiguration.class);
 
   protected final ConnectorRepository _connectorRepository;
 

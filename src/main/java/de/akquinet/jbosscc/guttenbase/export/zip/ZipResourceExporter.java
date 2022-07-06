@@ -1,7 +1,8 @@
 package de.akquinet.jbosscc.guttenbase.export.zip;
 
 import de.akquinet.jbosscc.guttenbase.utils.Util;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,7 +21,7 @@ import java.util.zip.ZipOutputStream;
  * @author M. Dahm
  */
 public class ZipResourceExporter {
-  protected static final Logger LOG = Logger.getLogger(ZipResourceExporter.class);
+  protected static final Logger LOG = LoggerFactory.getLogger(ZipResourceExporter.class);
 
   private final ZipOutputStream _zipOutputStream;
   private final Set<String> _entries = new HashSet<>();

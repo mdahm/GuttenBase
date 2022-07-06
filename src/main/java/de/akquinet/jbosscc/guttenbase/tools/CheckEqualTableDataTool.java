@@ -22,7 +22,8 @@ import de.akquinet.jbosscc.guttenbase.meta.DatabaseMetaData;
 import de.akquinet.jbosscc.guttenbase.meta.TableMetaData;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.statements.SelectStatementCreator;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.List;
@@ -40,7 +41,7 @@ import java.util.List;
  * Hint is used by {@link TableOrderHint} to determine order of tables
  */
 public class CheckEqualTableDataTool {
-  private static final Logger LOG = Logger.getLogger(CheckEqualTableDataTool.class);
+  private static final Logger LOG = LoggerFactory.getLogger(CheckEqualTableDataTool.class);
 
   private final ConnectorRepository _connectorRepository;
 

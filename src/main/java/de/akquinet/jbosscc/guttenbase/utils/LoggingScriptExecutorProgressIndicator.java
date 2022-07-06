@@ -1,9 +1,10 @@
 package de.akquinet.jbosscc.guttenbase.utils;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LoggingScriptExecutorProgressIndicator implements ScriptExecutorProgressIndicator {
-  private static final Logger LOG = Logger.getLogger(LoggingScriptExecutorProgressIndicator.class);
+  private static final Logger LOG = LoggerFactory.getLogger(LoggingScriptExecutorProgressIndicator.class);
 
   private final TimingProgressIndicator _timingDelegate = new TimingProgressIndicator();
 

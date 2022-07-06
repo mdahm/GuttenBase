@@ -6,6 +6,7 @@ import org.apache.commons.io.IOUtils;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLXML;
 
 /**
@@ -48,7 +49,7 @@ public class ExportDumpSqlXML extends AbstractExportDumpObject implements SQLXML
   @Override
   public String getString() {
     try {
-      return IOUtils.toString(getBinaryStream());
+      return IOUtils.toString(getBinaryStream(), StandardCharsets.UTF_8);
     } catch (final IOException e) {
       throw new GuttenBaseException("getString", e);
     }

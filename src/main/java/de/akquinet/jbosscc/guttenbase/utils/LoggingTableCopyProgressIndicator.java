@@ -1,9 +1,10 @@
 package de.akquinet.jbosscc.guttenbase.utils;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LoggingTableCopyProgressIndicator implements TableCopyProgressIndicator {
-  private static final Logger LOG = Logger.getLogger(LoggingTableCopyProgressIndicator.class);
+  private static final Logger LOG = LoggerFactory.getLogger(LoggingTableCopyProgressIndicator.class);
 
   private final TimingProgressIndicator _timingDelegate = new TimingProgressIndicator();
 

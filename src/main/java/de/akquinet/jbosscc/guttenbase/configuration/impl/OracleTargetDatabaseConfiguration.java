@@ -4,7 +4,8 @@ import de.akquinet.jbosscc.guttenbase.hints.TableOrderHint;
 import de.akquinet.jbosscc.guttenbase.meta.TableMetaData;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.tools.ScriptExecutorTool;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -21,7 +22,7 @@ import java.util.Map;
  * @author M. Dahm
  */
 public class OracleTargetDatabaseConfiguration extends DefaultTargetDatabaseConfiguration {
-  private static final Logger LOG = Logger.getLogger(OracleTargetDatabaseConfiguration.class);
+  private static final Logger LOG = LoggerFactory.getLogger(OracleTargetDatabaseConfiguration.class);
 
   public OracleTargetDatabaseConfiguration(final ConnectorRepository connectorRepository) {
     super(connectorRepository);

@@ -1,7 +1,8 @@
 package de.akquinet.jbosscc.guttenbase.connector.impl;
 
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -16,7 +17,7 @@ import java.sql.SQLException;
  * @author M. Dahm
  */
 public class DataSourceConnector extends AbstractConnector {
-  protected static final Logger LOG = Logger.getLogger(DataSourceConnector.class);
+  protected static final Logger LOG = LoggerFactory.getLogger(DataSourceConnector.class);
 
   private final DataSourceConnectorInfo _dataSourceConnectionInfo;
 

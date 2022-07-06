@@ -13,7 +13,8 @@ import de.akquinet.jbosscc.guttenbase.meta.ColumnMetaData;
 import de.akquinet.jbosscc.guttenbase.meta.TableMetaData;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.tools.CommonColumnTypeResolverTool;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -36,7 +37,7 @@ import java.util.Map;
  * Hint is used by {@link ColumnOrderHint} to determine column order
  */
 public class InsertStatementFiller {
-  private static final Logger LOG = Logger.getLogger(InsertStatementFiller.class);
+  private static final Logger LOG = LoggerFactory.getLogger(InsertStatementFiller.class);
 
   private final ConnectorRepository _connectorRepository;
   private final List<Closeable> _closeableObjects = new ArrayList<>();

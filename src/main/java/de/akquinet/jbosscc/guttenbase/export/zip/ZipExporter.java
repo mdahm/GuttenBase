@@ -13,7 +13,8 @@ import de.akquinet.jbosscc.guttenbase.meta.TableMetaData;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
 import de.akquinet.jbosscc.guttenbase.utils.Util;
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.URL;
@@ -37,7 +38,7 @@ import java.util.zip.ZipOutputStream;
  * Hint is used by {@link ExportDumpExtraInformationHint} to add custom information to the generated JAR
  */
 public class ZipExporter implements Exporter {
-  private static final Logger LOG = Logger.getLogger(ZipExporter.class);
+  private static final Logger LOG = LoggerFactory.getLogger(ZipExporter.class);
 
   private ZipOutputStream _zipOutputStream;
   private ObjectOutputStream _objectOutputStream;

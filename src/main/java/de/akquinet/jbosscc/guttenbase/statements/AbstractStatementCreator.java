@@ -7,7 +7,8 @@ import de.akquinet.jbosscc.guttenbase.mapping.ColumnMapper.ColumnMapperResult;
 import de.akquinet.jbosscc.guttenbase.meta.ColumnMetaData;
 import de.akquinet.jbosscc.guttenbase.meta.TableMetaData;
 import de.akquinet.jbosscc.guttenbase.repository.ConnectorRepository;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,7 @@ import java.util.List;
  * Hint is used by {@link ColumnOrderHint} to determine column order
  */
 public abstract class AbstractStatementCreator {
-  protected static final Logger LOG = Logger.getLogger(AbstractStatementCreator.class);
+  protected static final Logger LOG = LoggerFactory.getLogger(AbstractStatementCreator.class);
 
   protected final ConnectorRepository _connectorRepository;
   protected final String _connectorId;

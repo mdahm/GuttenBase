@@ -1,7 +1,8 @@
 package de.akquinet.jbosscc.guttenbase.utils;
 
 import de.akquinet.jbosscc.guttenbase.connector.GuttenBaseException;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.URL;
@@ -19,7 +20,7 @@ import java.util.StringTokenizer;
  * @author M. Dahm
  */
 public abstract class Util {
-  private static final Logger LOG = Logger.getLogger(Util.class);
+  private static final Logger LOG = LoggerFactory.getLogger(Util.class);
   public static final Class<?> ByteArrayClass = byte[].class;
 
   public static final int DEFAULT_BUFFER_SIZE = 1024 * 4;

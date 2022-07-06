@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.util.Calendar;
 
@@ -128,7 +129,7 @@ public class ExportDumpPreparedStatement implements PreparedStatement {
   public void setClob(final int parameterIndex, final Reader reader) {
     assert reader != null : "reader != null";
 
-    setObject(parameterIndex, new ExportDumpClob(new ReaderInputStream(reader)));
+    setObject(parameterIndex, new ExportDumpClob(new ReaderInputStream(reader, StandardCharsets.UTF_8)));
     flush();
   }
 
