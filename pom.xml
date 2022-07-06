@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>GuttenBase</artifactId>
     <groupId>de.akquinet.jbosscc.guttenbase</groupId>
-    <version>2.0.1-SNAPSHOT</version>
+    <version>2.0.2-SNAPSHOT</version>
     <name>GuttenBase - The database copying and migration framework</name>
     <url>http://guttenbase.spree.de</url>
     <description>Copying done right...</description>
@@ -264,14 +264,13 @@
     </build>
 
     <!--
-        Release from SNAPSHOT version
+        1. Change SNAPSHOT version to RELEASE version
 
-        mvn clean deploy -Prelease
+	 	2. mvn clean deploy -Prelease >& build.log
 
+        3. Lookup https://oss.sonatype.org/#stagingRepositories
+        
         http://central.sonatype.org/pages/releasing-the-deployment.html
-
-        Login als akquinet_ats
-        https://oss.sonatype.org/#stagingRepositories
     -->
 
     <profiles>
