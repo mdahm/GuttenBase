@@ -1,3 +1,8 @@
+What's new in Version 2.1.0
+============================
+
+- Switched to slf4j and log4j2
+
 What's new in Version 2.0.1
 ============================
 
