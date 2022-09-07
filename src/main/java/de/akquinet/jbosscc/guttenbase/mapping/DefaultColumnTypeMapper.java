@@ -5,6 +5,7 @@ import de.akquinet.jbosscc.guttenbase.meta.ColumnMetaData;
 
 import java.sql.Types;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import static de.akquinet.jbosscc.guttenbase.connector.DatabaseType.*;
@@ -76,9 +77,13 @@ public class DefaultColumnTypeMapper implements ColumnTypeMapper {
       case Types.CHAR:
       case Types.VARCHAR:
       case Types.VARBINARY:
-        final int precision = columnMetaData.getPrecision();
+        if (columnMetaData.getColumnTypeName().toUpperCase(Locale.ROOT).contains("TEXT")) {
+          return ""; // TEXT does not support precision
+        } else {
+          final int precision = columnMetaData.getPrecision();
 
-        return precision > 0 ? "(" + precision + ")" : "";
+          return precision > 0 ? "(" + precision + ")" : "";
+        }
       default:
         return "";
     }
