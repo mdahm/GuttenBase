@@ -14,6 +14,7 @@ import de.akquinet.jbosscc.guttenbase.meta.ColumnType;
  *
  * @author M. Dahm
  */
+@SuppressWarnings("SwitchStatementWithTooFewBranches")
 public class HeuristicColumnTypeResolver implements ColumnTypeResolver {
   /**
    * Performs some heuristic checks on given column type.
@@ -41,6 +42,8 @@ public class HeuristicColumnTypeResolver implements ColumnTypeResolver {
         return ColumnType.CLASS_BOOLEAN;
       } else if (columnType.equals("BYTEA") || columnType.startsWith("VARBINARY")) {
         return ColumnType.CLASS_BLOB;
+      } else if (columnType.equals("DATETIME")) {
+        return ColumnType.CLASS_DATETIME;
       } else if (columnType.startsWith("TIMESTAMP")) {
         return ColumnType.CLASS_TIMESTAMP;
       } else {
