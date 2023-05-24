@@ -27,5 +27,7 @@ public interface NumberOfRowsPerBatch {
   /**
    * Use VALUES() clauses or {@link PreparedStatement#addBatch()} as discussed above
    */
-  boolean useMultipleValuesClauses(TableMetaData targetTableMetaData);
+  default boolean useMultipleValuesClauses(TableMetaData targetTableMetaData) {
+    return true;
+  }
 }
