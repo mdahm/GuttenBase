@@ -1,16 +1,15 @@
 package de.akquinet.jbosscc.guttenbase.meta.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.akquinet.jbosscc.guttenbase.meta.ColumnMetaData;
 import de.akquinet.jbosscc.guttenbase.meta.ForeignKeyMetaData;
 import de.akquinet.jbosscc.guttenbase.meta.InternalForeignKeyMetaData;
 import de.akquinet.jbosscc.guttenbase.meta.TableMetaData;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Information about a foreign key between table columns.
@@ -27,8 +26,8 @@ public class ForeignKeyMetaDataImpl implements InternalForeignKeyMetaData {
   private static final Logger LOG = LoggerFactory.getLogger(ForeignKeyMetaDataImpl.class);
 
   private final String _foreignKeyName;
-  private final Set<ColumnMetaData> _referencingColumns = new LinkedHashSet<>();
-  private final Set<ColumnMetaData> _referencedColumns = new LinkedHashSet<>();
+  private final List<ColumnMetaData> _referencingColumns = new ArrayList<>();
+  private final List<ColumnMetaData> _referencedColumns = new ArrayList<>();
   private final TableMetaData _tableMetaData;
 
   public ForeignKeyMetaDataImpl(final TableMetaData tableMetaData, final String foreignKeyName,
@@ -85,12 +84,16 @@ public class ForeignKeyMetaDataImpl implements InternalForeignKeyMetaData {
 
   @Override
   public void addColumnTuple(final ColumnMetaData referencingColumn, final ColumnMetaData referencedColumn) {
-    if (!_referencingColumns.add(referencingColumn)) {
+    if(_referencingColumns.contains(referencingColumn)) {
       LOG.warn("Referencing column already added: " + referencingColumn);
+    } else {
+      _referencingColumns.add(referencingColumn);
     }
 
-    if (!_referencedColumns.add(referencedColumn)) {
+    if (_referencedColumns.contains(referencedColumn)) {
       LOG.warn("Referenced column already added: " + referencedColumn);
+    } else {
+      _referencedColumns.add(referencedColumn);
     }
   }
 
