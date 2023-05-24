@@ -1,12 +1,16 @@
 package de.akquinet.jbosscc.guttenbase.meta.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import de.akquinet.jbosscc.guttenbase.meta.ColumnMetaData;
 import de.akquinet.jbosscc.guttenbase.meta.ForeignKeyMetaData;
 import de.akquinet.jbosscc.guttenbase.meta.InternalForeignKeyMetaData;
 import de.akquinet.jbosscc.guttenbase.meta.TableMetaData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Information about a foreign key between table columns.
@@ -18,19 +22,18 @@ import de.akquinet.jbosscc.guttenbase.meta.TableMetaData;
  * @author M. Dahm
  */
 @SuppressWarnings("com.haulmont.jpb.EqualsDoesntCheckParameterClass")
-public class ForeignKeyMetaDataImpl implements InternalForeignKeyMetaData
-{
+public class ForeignKeyMetaDataImpl implements InternalForeignKeyMetaData {
   private static final long serialVersionUID = 1L;
+  private static final Logger LOG = LoggerFactory.getLogger(ForeignKeyMetaDataImpl.class);
 
   private final String _foreignKeyName;
-  private final List<ColumnMetaData> _referencingColumns = new ArrayList<>();
-  private final List<ColumnMetaData> _referencedColumns = new ArrayList<>();
+  private final Set<ColumnMetaData> _referencingColumns = new LinkedHashSet<>();
+  private final Set<ColumnMetaData> _referencedColumns = new LinkedHashSet<>();
   private final TableMetaData _tableMetaData;
 
   public ForeignKeyMetaDataImpl(final TableMetaData tableMetaData, final String foreignKeyName,
-      final ColumnMetaData referencingColumn,
-      final ColumnMetaData referencedColumn)
-  {
+                                final ColumnMetaData referencingColumn,
+                                final ColumnMetaData referencedColumn) {
     assert tableMetaData != null : "tableMetaData != null";
     assert foreignKeyName != null : "foreignKeyName != null";
     assert referencingColumn != null : "referencingColumn != null";
@@ -57,7 +60,7 @@ public class ForeignKeyMetaDataImpl implements InternalForeignKeyMetaData
   @Override
   public List<ColumnMetaData> getReferencingColumns()
   {
-    return _referencingColumns;
+    return new ArrayList<>(_referencingColumns);
   }
 
   @Override
@@ -77,14 +80,18 @@ public class ForeignKeyMetaDataImpl implements InternalForeignKeyMetaData
   @Override
   public List<ColumnMetaData> getReferencedColumns()
   {
-    return _referencedColumns;
+    return new ArrayList<>(_referencedColumns);
   }
 
   @Override
-  public void addColumnTuple(final ColumnMetaData referencingColumn, final ColumnMetaData referencedColumn)
-  {
-    _referencingColumns.add(referencingColumn);
-    _referencedColumns.add(referencedColumn);
+  public void addColumnTuple(final ColumnMetaData referencingColumn, final ColumnMetaData referencedColumn) {
+    if (!_referencingColumns.add(referencingColumn)) {
+      LOG.warn("Referencing column already added: " + referencingColumn);
+    }
+
+    if (!_referencedColumns.add(referencedColumn)) {
+      LOG.warn("Referenced column already added: " + referencedColumn);
+    }
   }
 
   @Override
