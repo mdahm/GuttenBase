@@ -13,6 +13,7 @@ import de.akquinet.jbosscc.guttenbase.meta.TableMetaData;
  *
  * @author M. Dahm
  */
+@FunctionalInterface
 public interface SplitColumn {
   /**
    * @return column of the table, i.e. in general the primary key or any other column name if no primary key column is appropriate

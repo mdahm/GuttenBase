@@ -9,6 +9,7 @@ import de.akquinet.jbosscc.guttenbase.meta.TableMetaData;
  *
  * @author M. Dahm
  */
+@FunctionalInterface
 public interface SelectWhereClause {
   String getWhereClause(TableMetaData tableMetaData);
 }

@@ -11,6 +11,7 @@ import java.util.Map;
  * &copy; 2022-2034 akquinet tech@spree
  * </p>
  */
+@FunctionalInterface
 public interface TableRowDataFilter {
   boolean accept(final Map<ColumnMetaData, Object> sourceValues, final Map<ColumnMetaData, Object> targetValues);
 }

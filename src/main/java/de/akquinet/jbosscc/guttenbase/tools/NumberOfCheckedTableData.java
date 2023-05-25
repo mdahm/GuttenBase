@@ -7,6 +7,7 @@ package de.akquinet.jbosscc.guttenbase.tools;
  *
  * @author M. Dahm
  */
+@FunctionalInterface
 public interface NumberOfCheckedTableData {
   int getNumberOfCheckedTableData();
 }

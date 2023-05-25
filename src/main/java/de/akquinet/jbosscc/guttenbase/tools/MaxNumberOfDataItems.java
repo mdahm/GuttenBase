@@ -12,6 +12,7 @@ import de.akquinet.jbosscc.guttenbase.meta.TableMetaData;
  *
  * @author M. Dahm
  */
+@FunctionalInterface
 public interface MaxNumberOfDataItems {
   int getMaxNumberOfDataItems(TableMetaData targetTableMetaData);
 }

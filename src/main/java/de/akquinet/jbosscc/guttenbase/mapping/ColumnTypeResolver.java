@@ -12,6 +12,7 @@ import de.akquinet.jbosscc.guttenbase.meta.ColumnType;
  *
  * @author M. Dahm
  */
+@FunctionalInterface
 public interface ColumnTypeResolver {
   /**
    * Tries to map column to a known type.

@@ -18,7 +18,6 @@ import de.akquinet.jbosscc.guttenbase.meta.TableMetaData;
  * @author M. Dahm
  * @see MaxNumberOfDataItems
  */
-
 public interface ResultSetParameters {
   int getFetchSize(TableMetaData tableMetaData);
 

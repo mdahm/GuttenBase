@@ -26,7 +26,6 @@ public interface ColumnMapper {
    */
   String mapColumnName(ColumnMetaData source, TableMetaData targetTableMetaData);
 
-
   class ColumnMapperResult {
     private final List<ColumnMetaData> _columns;
     private final boolean _emptyColumnListOk;

@@ -9,6 +9,7 @@ import java.util.List;
  *
  * @author M. Dahm
  */
+@FunctionalInterface
 public interface ColumnTypeResolverList {
   List<ColumnTypeResolver> getColumnTypeResolvers();
 }

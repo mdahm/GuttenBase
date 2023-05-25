@@ -11,6 +11,7 @@ import java.util.Comparator;
  * &copy; 2012-2034 akquinet tech@spree
  * </p>
  */
+@FunctionalInterface
 public interface ColumnOrderComparatorFactory {
   Comparator<ColumnMetaData> createComparator();
 }

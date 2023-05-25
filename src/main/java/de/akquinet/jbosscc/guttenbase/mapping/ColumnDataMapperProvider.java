@@ -27,6 +27,5 @@ public interface ColumnDataMapperProvider {
   /**
    * Specify additional mapping
    */
-  void addMapping(final ColumnType sourceColumnType, final ColumnType targetColumnType, final ColumnDataMapper columnDataMapper)
-     ;
+  void addMapping(final ColumnType sourceColumnType, final ColumnType targetColumnType, final ColumnDataMapper columnDataMapper);
 }

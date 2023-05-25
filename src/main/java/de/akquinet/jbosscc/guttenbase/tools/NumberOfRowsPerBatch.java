@@ -20,7 +20,7 @@ import java.sql.PreparedStatement;
  * @author M. Dahm
  * @see MaxNumberOfDataItems
  */
-
+@FunctionalInterface
 public interface NumberOfRowsPerBatch {
   int getNumberOfRowsPerBatch(TableMetaData targetTableMetaData);
 
